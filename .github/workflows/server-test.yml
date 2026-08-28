@@ -1,0 +1,33 @@
+name: DeepCache Server Automated Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allows you to run it manually with a single click
+
+jobs:
+  compile-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code Repository Base
+      uses: actions/checkout@v4
+
+    - name: Configure Linux Build Tools and CMake
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Build C++ Tokenizer Engine
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make
+
+    - name: Execute Live Inference Cache Benchmark
+      run: |
+        cd build
+        ./DeepCacheEngine
